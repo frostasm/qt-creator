@@ -3202,9 +3202,17 @@ void ProjectExplorerPluginPrivate::removeFile()
         Q_ASSERT(folderNode);
 
         if (!folderNode->removeFiles(QStringList(filePath))) {
-            QMessageBox::warning(ICore::mainWindow(), tr("Removing File Failed"),
+            if(deleteFile) {
+                QMessageBox::StandardButton reply;
+                reply = QMessageBox::question(ICore::mainWindow(), tr("Removing File Failed"),
+                                           tr("Could not remove file %1 from project %2.\n\nRemove file permanently anyway?").arg(filePath).arg(folderNode->projectNode()->displayName()),
+                                              QMessageBox::Yes|QMessageBox::No);
+                if (reply == QMessageBox::No)  return;
+            } else {
+                QMessageBox::warning(ICore::mainWindow(), tr("Removing File Failed"),
                                  tr("Could not remove file %1 from project %2.").arg(filePath).arg(folderNode->projectNode()->displayName()));
-            return;
+                return;
+            }
         }
 
         DocumentManager::expectFileChange(filePath);
