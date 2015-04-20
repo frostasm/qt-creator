@@ -1502,6 +1502,13 @@ QStringList QmakePriFileNode::dynamicVarNames(QtSupport::ProFileReader *readerEx
     return result;
 }
 
+bool QmakePriFileNode::filterFileIsQmlType(const FileName &file)
+{
+    return file.toString().endsWith(QLatin1String(".qml"))
+            || file.toString().endsWith(QLatin1String(".js"))
+            || file.toString().endsWith(QLatin1String("qmldir"));
+}
+
 QSet<FileName> QmakePriFileNode::filterFilesProVariables(FileType fileType, const QSet<FileName> &files)
 {
     if (fileType != QMLType && fileType != UnknownFileType)
@@ -1509,11 +1516,11 @@ QSet<FileName> QmakePriFileNode::filterFilesProVariables(FileType fileType, cons
     QSet<FileName> result;
     if (fileType == QMLType) {
         foreach (const FileName &file, files)
-            if (file.toString().endsWith(QLatin1String(".qml")))
+            if (filterFileIsQmlType(file))
                 result << file;
     } else {
         foreach (const FileName &file, files)
-            if (!file.toString().endsWith(QLatin1String(".qml")))
+            if (!filterFileIsQmlType(file))
                 result << file;
     }
     return result;
@@ -1526,11 +1533,11 @@ QSet<FileName> QmakePriFileNode::filterFilesRecursiveEnumerata(FileType fileType
         return result;
     if (fileType == QMLType) {
         foreach (const FileName &file, files)
-            if (file.toString().endsWith(QLatin1String(".qml")))
+            if (filterFileIsQmlType(file))
                 result << file;
     } else {
         foreach (const FileName &file, files)
-            if (!file.toString().endsWith(QLatin1String(".qml")))
+            if (!filterFileIsQmlType(file))
                 result << file;
     }
     return result;
