@@ -272,12 +272,16 @@ bool GenericProposalModel::isSortable(const QString &prefix) const
 void GenericProposalModel::sort(const QString &prefix)
 {
     std::stable_sort(m_currentItems.begin(), m_currentItems.end(), ContentLessThan(prefix));
+    sortByAccessTime();
+}
 
-    for (int i = 0; i <  GenericProposalModel::s_lastActivatedItems.count(); ++i) {
+void GenericProposalModel::sortByAccessTime()
+{
+    for (int i = 0; i < GenericProposalModel::s_lastActivatedItems.count(); ++i) {
         const QString &activatedItemText = GenericProposalModel::s_lastActivatedItems[i];
         for (int j = 0; j < m_currentItems.count(); ++j) {
             if (m_currentItems[j]->text() == activatedItemText) {
-                m_currentItems.move(j,0);
+                m_currentItems.move(j, 0);
                 break;
             }
         }

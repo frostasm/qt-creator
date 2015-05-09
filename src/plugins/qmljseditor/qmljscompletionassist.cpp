@@ -1030,6 +1030,7 @@ void QmlJSAssistProposalModel::filter(const QString &prefix)
 void QmlJSAssistProposalModel::sort(const QString &prefix)
 {
     std::sort(m_currentItems.begin(), m_currentItems.end(), QmlJSLessThan(prefix));
+    sortByAccessTime();
 }
 
 bool QmlJSAssistProposalModel::keepPerfectMatch(AssistReason reason) const

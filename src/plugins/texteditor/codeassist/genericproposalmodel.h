@@ -64,6 +64,7 @@ public:
     virtual void filter(const QString &prefix);
     virtual bool isSortable(const QString &prefix) const;
     virtual void sort(const QString &prefix);
+    virtual void sortByAccessTime();
     virtual bool supportsPrefixExpansion() const;
     virtual QString proposalPrefix() const;
     virtual bool keepPerfectMatch(AssistReason reason) const;
