@@ -52,6 +52,7 @@ namespace {
 
 const int kMaxSort = 1000;
 const int kMaxPrefixFilter = 100;
+const int kMaxLastActivatedItem = 1000;
 
 struct ContentLessThan
 {
@@ -133,6 +134,8 @@ private:
 };
 
 } // Anonymous
+
+QStringList TextEditor::GenericProposalModel::s_lastActivatedItems;
 
 GenericProposalModel::GenericProposalModel()
 {}
@@ -269,6 +272,16 @@ bool GenericProposalModel::isSortable(const QString &prefix) const
 void GenericProposalModel::sort(const QString &prefix)
 {
     std::stable_sort(m_currentItems.begin(), m_currentItems.end(), ContentLessThan(prefix));
+
+    for (int i = 0; i <  GenericProposalModel::s_lastActivatedItems.count(); ++i) {
+        const QString &activatedItemText = GenericProposalModel::s_lastActivatedItems[i];
+        for (int j = 0; j < m_currentItems.count(); ++j) {
+            if (m_currentItems[j]->text() == activatedItemText) {
+                m_currentItems.move(j,0);
+                break;
+            }
+        }
+    }
 }
 
 int GenericProposalModel::persistentId(int index) const
@@ -314,4 +327,18 @@ QString GenericProposalModel::proposalPrefix() const
 AssistProposalItem *GenericProposalModel::proposalItem(int index) const
 {
     return m_currentItems.at(index);
+}
+
+void GenericProposalModel::itemActivated(int index)
+{
+    const QString text = m_currentItems.at(index)->text();
+
+    QStringList &lastActivatedItems = GenericProposalModel::s_lastActivatedItems;
+
+    lastActivatedItems.removeOne(text);
+    lastActivatedItems.append(text);
+
+    if (lastActivatedItems.count() > kMaxLastActivatedItem) {
+        lastActivatedItems.removeAt(0); // first oldest
+    }
 }

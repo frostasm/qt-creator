@@ -658,7 +658,11 @@ bool GenericProposalWidget::activateCurrentProposalItem()
 {
     if (d->m_completionListView->currentIndex().isValid()) {
         const int currentRow = d->m_completionListView->currentIndex().row();
-        emit proposalItemActivated(d->m_model->proposalItem(currentRow));
+        d->m_model->itemActivated(currentRow);
+
+        AssistProposalItem *proposalItem = d->m_model->proposalItem(currentRow);
+        emit proposalItemActivated(proposalItem);
+
         return true;
     }
     return false;

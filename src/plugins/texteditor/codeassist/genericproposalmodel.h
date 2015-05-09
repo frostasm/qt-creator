@@ -39,6 +39,7 @@
 
 #include <QHash>
 #include <QList>
+#include <QStringList>
 
 QT_FORWARD_DECLARE_CLASS(QIcon)
 
@@ -67,6 +68,7 @@ public:
     virtual QString proposalPrefix() const;
     virtual bool keepPerfectMatch(AssistReason reason) const;
     virtual AssistProposalItem *proposalItem(int index) const;
+    virtual void itemActivated(int index);
 
     void loadContent(const QList<AssistProposalItem *> &items);
     void setSortingAllowed(bool isAllowed);
@@ -75,6 +77,8 @@ public:
 protected:
     QList<AssistProposalItem *> m_currentItems;
 
+    static QStringList s_lastActivatedItems; // first oldest
+    
 private:
     QHash<QString, int> m_idByText;
     QList<AssistProposalItem *> m_originalItems;
