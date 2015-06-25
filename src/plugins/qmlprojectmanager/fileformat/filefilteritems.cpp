@@ -300,7 +300,7 @@ QSet<QString> FileFilterBaseItem::filesInSubTree(const QDir &rootDir, const QDir
 QmlFileFilterItem::QmlFileFilterItem(QObject *parent)
     : FileFilterBaseItem(parent)
 {
-    setFilter(QLatin1String("*.qml"));
+    setFilter(QLatin1String("*.qml;qmldir"));
 }
 
 JsFileFilterItem::JsFileFilterItem(QObject *parent)
