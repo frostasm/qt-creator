@@ -207,6 +207,11 @@ ProjectTreeWidget::ProjectTreeWidget(QWidget *parent)
     m_filterGeneratedFilesAction->setChecked(true);
     connect(m_filterGeneratedFilesAction, SIGNAL(toggled(bool)), this, SLOT(setGeneratedFilesFilter(bool)));
 
+    m_filterJoinSources = new QAction(tr("Join Sources"), this);
+    m_filterJoinSources->setCheckable(true);
+    m_filterJoinSources->setChecked(false);
+    connect(m_filterJoinSources, SIGNAL(toggled(bool)), this, SLOT(setJoinSourcesFilter(bool)));
+
     // connections
     connect(m_model, SIGNAL(modelReset()),
             this, SLOT(initView()));
@@ -560,9 +565,20 @@ void ProjectTreeWidget::setGeneratedFilesFilter(bool filter)
     m_filterGeneratedFilesAction->setChecked(filter);
 }
 
+void ProjectTreeWidget::setJoinSourcesFilter(bool filter)
+{
+    m_model->setJoinSourcesFilterEnabled(filter);
+    m_filterJoinSources->setChecked(filter);
+}
+
 bool ProjectTreeWidget::generatedFilesFilter()
 {
     return m_model->generatedFilesFilterEnabled();
+}
+
+bool ProjectTreeWidget::joinSourcesFilter()
+{
+    return m_model->joinSourcesFilterEnabled();
 }
 
 bool ProjectTreeWidget::projectFilter()
@@ -593,6 +609,7 @@ NavigationView ProjectTreeWidgetFactory::createWidget()
     QMenu *filterMenu = new QMenu(filter);
     filterMenu->addAction(ptw->m_filterProjectsAction);
     filterMenu->addAction(ptw->m_filterGeneratedFilesAction);
+    filterMenu->addAction(ptw->m_filterJoinSources);
     filter->setMenu(filterMenu);
 
     n.dockToolBarWidgets << filter << ptw->toggleSync();
@@ -607,6 +624,7 @@ void ProjectTreeWidgetFactory::saveSettings(int position, QWidget *widget)
     const QString baseKey = QLatin1String("ProjectTreeWidget.") + QString::number(position);
     settings->setValue(baseKey + QLatin1String(".ProjectFilter"), ptw->projectFilter());
     settings->setValue(baseKey + QLatin1String(".GeneratedFilter"), ptw->generatedFilesFilter());
+    settings->setValue(baseKey + QLatin1String(".JoinSourcesFilter"), ptw->joinSourcesFilter());
     settings->setValue(baseKey + QLatin1String(".SyncWithEditor"), ptw->autoSynchronization());
 }
 
@@ -618,5 +636,6 @@ void ProjectTreeWidgetFactory::restoreSettings(int position, QWidget *widget)
     const QString baseKey = QLatin1String("ProjectTreeWidget.") + QString::number(position);
     ptw->setProjectFilter(settings->value(baseKey + QLatin1String(".ProjectFilter"), false).toBool());
     ptw->setGeneratedFilesFilter(settings->value(baseKey + QLatin1String(".GeneratedFilter"), true).toBool());
+    ptw->setJoinSourcesFilter(settings->value(baseKey + QLatin1String(".JoinSourcesFilter"), false).toBool());
     ptw->setAutoSynchronization(settings->value(baseKey +  QLatin1String(".SyncWithEditor")).toBool());
 }

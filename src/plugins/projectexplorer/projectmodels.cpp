@@ -176,6 +176,7 @@ FlatModel::FlatModel(SessionNode *rootNode, QObject *parent)
         : QAbstractItemModel(parent),
           m_filterProjects(false),
           m_filterGeneratedFiles(true),
+          m_filterJoinSources(false),
           m_rootNode(rootNode),
           m_startupProject(0),
           m_parentFolderForChange(0)
@@ -546,6 +547,12 @@ void FlatModel::setGeneratedFilesFilterEnabled(bool filter)
     reset();
 }
 
+void FlatModel::setJoinSourcesFilterEnabled(bool filter)
+{
+    m_filterJoinSources = filter;
+    m_rootNode->setJoinSources(filter);
+}
+
 bool FlatModel::projectFilterEnabled()
 {
     return m_filterProjects;
@@ -554,6 +561,11 @@ bool FlatModel::projectFilterEnabled()
 bool FlatModel::generatedFilesFilterEnabled()
 {
     return m_filterGeneratedFiles;
+}
+
+bool FlatModel::joinSourcesFilterEnabled()
+{
+    return m_filterJoinSources;
 }
 
 Node *FlatModel::nodeForIndex(const QModelIndex &index) const

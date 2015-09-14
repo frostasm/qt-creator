@@ -142,6 +142,7 @@ public:
 
     void update(const Internal::PriFileEvalResult &result);
 
+    void reload() override;
 
 // ProjectNode interface
     QList<ProjectExplorer::ProjectAction> supportedActions(Node *node) const;

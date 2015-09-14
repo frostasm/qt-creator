@@ -756,8 +756,15 @@ void QmakePriFileNode::update(const Internal::PriFileEvalResult &result)
     const QVector<QmakeNodeStaticData::FileTypeData> &fileTypes = qmakeNodeStaticData()->fileTypeData;
     for (int i = 0; i < fileTypes.size(); ++i) {
         FileType type = fileTypes.at(i).type;
-        const QSet<FileName> &newFilePaths = result.foundFiles.value(type);
-        // We only need to save this information if
+
+        if (joinSources() && type == HeaderType)
+            continue;
+
+        QSet<FileName> newFilePaths = result.foundFiles.value(type);
+        if (joinSources() && type == SourceType)
+            newFilePaths = newFilePaths.unite(result.foundFiles.value(HeaderType));
+
+            // We only need to save this information if
         // we are watching folders
         if (!result.folders.isEmpty())
             m_files[type] = newFilePaths;
@@ -779,6 +786,12 @@ void QmakePriFileNode::update(const Internal::PriFileEvalResult &result)
     }
 
     contents.updateSubFolders(this);
+}
+
+void QmakePriFileNode::reload()
+{
+    if(m_project)
+        m_project->scheduleAsyncUpdate(QmakeProFileNode::ParseNow);
 }
 
 void QmakePriFileNode::watchFolders(const QSet<QString> &folders)

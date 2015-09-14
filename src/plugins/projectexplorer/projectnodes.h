@@ -261,6 +261,11 @@ public:
 
     virtual QList<RunConfiguration *> runConfigurations() const;
 
+    virtual void setJoinSources(bool joinSources);
+    virtual bool joinSources() const;
+
+    virtual void reload() {}
+
     void accept(NodesVisitor *visitor) override;
 
     bool isEnabled() const override { return true; }
@@ -279,6 +284,8 @@ protected:
 
 private:
     QList<ProjectNode*> m_subProjectNodes;
+
+    bool m_joinSources = false;
 
     // let SessionNode call setParentFolderNode
     friend class SessionNode;
@@ -302,6 +309,8 @@ public:
     bool showInSimpleTree() const;
     void projectDisplayNameChanged(Node *node);
 
+    virtual void setJoinSources(bool joinSources);
+
     SessionNode *asSessionNode();
 protected:
     void addProjectNodes(const QList<ProjectNode*> &projectNodes);
@@ -309,6 +318,7 @@ protected:
 
 private:
     QList<ProjectNode*> m_projectNodes;
+    bool m_joinSources = false;
 };
 
 template<class T1, class T3>

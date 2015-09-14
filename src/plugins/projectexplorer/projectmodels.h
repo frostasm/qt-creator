@@ -79,6 +79,7 @@ public:
 
     bool projectFilterEnabled();
     bool generatedFilesFilterEnabled();
+    bool joinSourcesFilterEnabled();
 
 signals:
     void renamed(const Utils::FileName &oldName, const Utils::FileName &newName);
@@ -86,6 +87,7 @@ signals:
 public slots:
     void setProjectFilterEnabled(bool filter);
     void setGeneratedFilesFilterEnabled(bool filter);
+    void setJoinSourcesFilterEnabled(bool filter);
 
 private slots:
     void aboutToShowInSimpleTreeChanged(ProjectExplorer::FolderNode *node);
@@ -125,6 +127,7 @@ private:
 
     bool m_filterProjects;
     bool m_filterGeneratedFiles;
+    bool m_filterJoinSources;
 
     SessionNode *m_rootNode;
     mutable QHash<FolderNode*, QList<Node*> > m_childNodes;

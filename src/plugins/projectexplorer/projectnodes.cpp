@@ -666,6 +666,19 @@ QList<RunConfiguration *> ProjectNode::runConfigurations() const
     return QList<RunConfiguration *>();
 }
 
+void ProjectNode::setJoinSources(bool joinSources)
+{
+    m_joinSources = joinSources;
+
+    for (ProjectNode* pNode: m_subProjectNodes)
+        pNode->setJoinSources(joinSources);
+}
+
+bool ProjectNode::joinSources() const
+{
+    return m_joinSources;
+}
+
 void ProjectNode::accept(NodesVisitor *visitor)
 {
     visitor->visitProjectNode(this);
@@ -682,8 +695,10 @@ void ProjectNode::addProjectNodes(const QList<ProjectNode*> &subProjects)
 {
     if (!subProjects.isEmpty()) {
         QList<FolderNode*> folderNodes;
-        foreach (ProjectNode *projectNode, subProjects)
+        foreach (ProjectNode *projectNode, subProjects) {
             folderNodes << projectNode;
+            projectNode->setJoinSources(m_joinSources);
+        }
 
         ProjectTree::instance()->emitFoldersAboutToBeAdded(this, folderNodes);
 
@@ -781,6 +796,16 @@ void SessionNode::projectDisplayNameChanged(Node *node)
     ProjectTree::instance()->emitNodeSortKeyChanged(node);
 }
 
+void SessionNode::setJoinSources(bool joinSources)
+{
+    m_joinSources = joinSources;
+
+    for (ProjectNode* pNode: m_projectNodes) {
+        pNode->setJoinSources(joinSources);
+        pNode->reload();
+    }
+}
+
 SessionNode *SessionNode::asSessionNode()
 {
     return this;
@@ -795,8 +820,10 @@ void SessionNode::addProjectNodes(const QList<ProjectNode*> &projectNodes)
 {
     if (!projectNodes.isEmpty()) {
         QList<FolderNode*> folderNodes;
-        foreach (ProjectNode *projectNode, projectNodes)
+        foreach (ProjectNode *projectNode, projectNodes) {
             folderNodes << projectNode;
+            projectNode->setJoinSources(m_joinSources);
+        }
 
         ProjectTree::instance()->emitFoldersAboutToBeAdded(this, folderNodes);
 

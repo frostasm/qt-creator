@@ -65,6 +65,8 @@ public:
     void setAutoSynchronization(bool sync);
     bool projectFilter();
     bool generatedFilesFilter();
+    bool joinSourcesFilter();
+
     QToolButton *toggleSync();
     Node *currentNode();
     void sync(ProjectExplorer::Node *node);
@@ -81,6 +83,7 @@ public slots:
 private slots:
     void setProjectFilter(bool filter);
     void setGeneratedFilesFilter(bool filter);
+    void setJoinSourcesFilter(bool filter);
 
     void handleCurrentItemChange(const QModelIndex &current);
     void showContextMenu(const QPoint &pos);
@@ -106,6 +109,7 @@ private:
     FlatModel *m_model;
     QAction *m_filterProjectsAction;
     QAction *m_filterGeneratedFilesAction;
+    QAction *m_filterJoinSources;
     QToolButton *m_toggleSync;
 
     QModelIndex m_subIndex;
